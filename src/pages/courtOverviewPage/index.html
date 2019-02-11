@@ -1,0 +1,49 @@
+<div class="courtOverviewPage">
+
+  <!--头部搜索部分-->
+  <el-container>
+    <el-main>
+      分类：
+      <el-select v-model="form.areacourt" placeholder="请选择地区法院" size="mini">
+        <el-option v-for="(item, index) in areaCourtList" :label="item.label" :value="item.value" :key="index"></el-option>
+      </el-select>
+      <el-button type="primary" icon="el-icon-search" size="mini">搜索</el-button>
+    </el-main>
+  </el-container>
+
+  <!--点击编辑按钮弹出表单部分-->
+  <el-dialog :visible.sync="editCourtOverviewDialog" center>
+    <el-form :model="editForm" label-position="left" label-width="150px" :rules="editRules">
+      <el-form-item label="地址" prop="address">
+        <el-input v-model="editForm.address" placeholder="请输入地址"></el-input>
+      </el-form-item>
+      <el-form-item label="信访电话">
+        <el-input v-model="editForm.letterNumber" placeholder="请输入信访电话"></el-input>
+      </el-form-item>
+      <el-form-item label="投诉电话">
+        <el-input v-model="editForm.complaintNumber" placeholder="请输入投诉电话"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="editCourtOverviewDialog = false" size="small">提 交</el-button>
+      <el-button @click="editCourtOverviewDialog = false" size="small">返 回</el-button>
+    </div>
+  </el-dialog>
+
+  <!--页面里表格部分-->
+  <el-table class="table" :data="dataList.slice((currentPage-1)*pagesize,currentPage*pagesize)" v-loading="loading" element-loading-text="数据拼命加载中..." border style="width: 100%">
+    <el-table-column prop="courtName" label="法院名称" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="letterNumber" label="信访电话" show-overflow-tooltip width="140"></el-table-column>
+    <el-table-column prop="complaintNumber" label="投诉电话" width="140"></el-table-column>
+    <el-table-column fixed="right" label="操作" width="70">
+      <template slot-scope="scope">
+        <el-button @click="handleClicky(scope.row)" type="text" size="small">编辑</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!--表格的页码-->
+  <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+
+</div>

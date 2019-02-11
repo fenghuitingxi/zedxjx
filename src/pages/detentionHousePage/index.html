@@ -1,0 +1,109 @@
+<div class="detentionHousePage">
+
+  <!--头部搜索部分-->
+  <el-container>
+    <el-main>
+      名称：
+      <el-input placeholder="请输入关键字..." size="mini" style="width: 200px;"></el-input>
+      <el-button type="primary" icon="el-icon-search" size="mini">搜索</el-button>
+    </el-main>
+  </el-container>
+
+  <!--三个按钮-->
+  <el-row>
+    <el-button type="primary" size="small">排序</el-button>
+    <el-button type="primary" size="small" @click="deleteRows">删除</el-button>
+    <el-button type="primary" @click="addDetentionHouseDialog = true" size="small">添加看守所</el-button>
+  </el-row>
+
+  <!--点击添加按钮弹出表单部分-->
+  <el-dialog :visible.sync="addDetentionHouseDialog" center>
+    <el-form :model="form" label-position="left" label-width="150px" :rules="rules">
+      <el-form-item label="地区选择">
+        <el-select v-model="form.area" placeholder="请选择地区">
+          <el-option v-for="(item, index) in areaList" :label="item.label" :value="item.value" :key="index"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+      </el-form-item>
+      <el-form-item label="看守所地址" prop="detentionhouseaddress">
+        <el-input v-model="form.detentionhouseaddress" placeholder="请输入看守所地址"></el-input>
+      </el-form-item>
+      <el-form-item label="看守所联系方式">
+        <el-input v-model="form.houselinkmethod" placeholder="请输入看守所联系方式"></el-input>
+      </el-form-item>
+      <el-form-item label="简介">
+        <el-input type="textarea" v-model="form.introduce"></el-input>
+      </el-form-item>
+      <el-form-item label="缩略图">
+        <el-input type="textarea" v-model="form.smallimg"></el-input>
+      </el-form-item>
+      <el-form-item label="相册图集">
+        <el-input type="textarea" v-model="form.pictures"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="addDetentionHouseDialog = false" size="small">提 交</el-button>
+      <el-button @click="addDetentionHouseDialog = false" size="small">返 回</el-button>
+    </div>
+  </el-dialog>
+
+  <!--点击编辑按钮弹出表单部分-->
+  <el-dialog :visible.sync="editDetentionHouseDialog" center>
+    <div slot="title">
+      <h2>修改看守所</h2>
+    </div>
+    <el-form :model="editForm" label-position="left" label-width="150px" :rules="editRules">
+      <el-form-item label="地区选择">
+        <el-select v-model="editForm.area" placeholder="请选择地区">
+          <el-option v-for="(item, index) in areaList" :label="item.label" :value="item.value" :key="index"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="editForm.title" placeholder="请输入协助单位名称"></el-input>
+      </el-form-item>
+      <el-form-item label="看守所地址" prop="address">
+        <el-input v-model="editForm.address" placeholder="请输入协助单位地址"></el-input>
+      </el-form-item>
+      <el-form-item label="看守所联系方式">
+        <el-input v-model="editForm.phone" placeholder="请输入协助单位联系方式"></el-input>
+      </el-form-item>
+      <el-form-item label="简介">
+        <el-input type="textarea" v-model="editForm.description"></el-input>
+      </el-form-item>
+      <el-form-item label="缩略图">
+        <el-input type="textarea" v-model="editForm.img"></el-input>
+      </el-form-item>
+      <el-form-item label="相册图集">
+        <el-input type="textarea" v-model="editForm.pictures"></el-input>
+      </el-form-item>
+
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="editDetentionHouseDialog = false" size="small">提 交</el-button>
+      <el-button @click="editDetentionHouseDialog = false" size="small">返 回</el-button>
+    </div>
+  </el-dialog>
+
+  <!--页面里表格部分-->
+  <el-table @selection-change="handleSelectionChange" class="table" :data="dataList.slice((currentPage-1)*pagesize,currentPage*pagesize)" v-loading="loading" element-loading-text="数据拼命加载中..." border style="width: 100%">
+    <el-table-column type="selection"></el-table-column>
+    <el-table-column fixed prop="type" label="排序" width="80"></el-table-column>
+    <el-table-column prop="title" label="标题" show-overflow-tooltip width="200"></el-table-column>
+    <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="description" label="简介" show-overflow-tooltip width="200"></el-table-column>
+    <el-table-column prop="img" label="图片" show-overflow-tooltip width="70"></el-table-column>
+    <el-table-column prop="phone" label="电话" width="100"></el-table-column>
+    <el-table-column fixed="right" label="操作" width="100">
+      <template slot-scope="scope">
+        <el-button @click="handleClicky(scope.row)" type="text" size="small">编辑</el-button>
+        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, dataList)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!--表格的页码-->
+  <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+
+</div>

@@ -1,0 +1,123 @@
+<div class="assistUnitManage">
+
+  <!--头部搜索部分-->
+  <el-container>
+    <el-main>
+      关键字：
+      <el-input placeholder="请输入关键字..." size="mini" style="width: 200px;"></el-input>
+      <el-button type="primary" icon="el-icon-search" size="mini">搜索</el-button>
+    </el-main>
+  </el-container>
+
+  <!--添加单位按钮-->
+  <div class="warpprt-content-header">
+    <el-button type="primary" @click="addAssistManage">添加协助执行单位</el-button>
+  </div>
+
+  <!--点击添加按钮弹出表单部分-->
+  <el-dialog :visible.sync="addAssistManageDialog" center>
+    <el-form :model="form" label-position="left" label-width="150px" ref="ruleForm" :rules="rules">
+      <el-form-item label="类型选择">
+        <el-select v-model="form.type" placeholder="请选择类型">
+          <el-option v-for="(item, index) in typeList" :label="item.label" :value="item.value" :key="index"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="地区选择">
+        <el-select v-model="form.area" placeholder="请选择地区">
+          <el-option v-for="(item, index) in areaList" :label="item.label" :value="item.value" :key="index"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="协助单位名称" prop="assistunitname">
+        <el-input v-model="form.assistunitname" placeholder="请输入协助单位名称"></el-input>
+      </el-form-item>
+      <el-form-item label="协助单位地址" prop="assistunitaddress">
+        <el-input v-model="form.assistunitaddress" placeholder="请输入协助单位地址"></el-input>
+      </el-form-item>
+      <el-form-item label="协助单位联系方式">
+        <el-input v-model="form.assistunitmethod" placeholder="请输入协助单位联系方式"></el-input>
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input type="textarea" v-model="form.remark"></el-input>
+      </el-form-item>
+      <el-form-item label="简介">
+        <el-input type="textarea" v-model="form.introduce"></el-input>
+      </el-form-item>
+      <el-form-item label="缩略图">
+        <el-input type="textarea" v-model="form.smallimg"></el-input>
+      </el-form-item>
+      <el-form-item label="相册图集">
+        <el-input type="textarea" v-model="form.pictures"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="addAssistManageDialog = false" size="small">提 交</el-button>
+      <el-button @click="addAssistManageDialog = false" size="small">返 回</el-button>
+    </div>
+  </el-dialog>
+
+  <!--点击编辑按钮弹出表单部分-->
+  <el-dialog :visible.sync="editAssistManageDialog" center>
+    <div slot="title">
+      <h2>修改协助执行单位</h2>
+    </div>
+    <el-form :model="editForm" label-position="left" label-width="150px" :rules="editRules">
+      <el-form-item label="类型选择">
+        <el-select v-model="editForm.type" placeholder="请选择类型">
+          <el-option v-for="(item, index) in typeList" :label="item.label" :value="item.value" :key="index"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="地区选择">
+        <el-select v-model="editForm.area" placeholder="请选择地区">
+          <el-option v-for="(item, index) in areaList" :label="item.label" :value="item.value" :key="index"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="协助单位名称" prop="companyName">
+        <el-input v-model="editForm.companyName" placeholder="请输入协助单位名称"></el-input>
+      </el-form-item>
+      <el-form-item label="协助单位地址" prop="address">
+        <el-input v-model="editForm.address" placeholder="请输入协助单位地址"></el-input>
+      </el-form-item>
+      <el-form-item label="协助单位联系方式">
+        <el-input v-model="editForm.phone" placeholder="请输入协助单位联系方式"></el-input>
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input type="textarea" v-model="editForm.remark"></el-input>
+      </el-form-item>
+      <el-form-item label="简介">
+        <el-input type="textarea" v-model="editForm.detail"></el-input>
+      </el-form-item>
+      <el-form-item label="缩略图">
+        <el-input type="textarea" v-model="editForm.img"></el-input>
+      </el-form-item>
+      <el-form-item label="相册图集">
+        <el-input type="textarea" v-model="editForm.pictures"></el-input>
+      </el-form-item>
+
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="editAssistManageDialog = false" size="small">提 交</el-button>
+      <el-button @click="editAssistManageDialog = false" size="small">返 回</el-button>
+    </div>
+  </el-dialog>
+
+  <!--页面里表格部分-->
+  <el-table class="table" :data="dataList.slice((currentPage-1)*pagesize,currentPage*pagesize)" v-loading="loading" element-loading-text="数据拼命加载中..." border style="width: 100%">
+    <el-table-column fixed prop="type" label="类型" width="60"></el-table-column>
+    <el-table-column prop="area" label="地区" width="70"></el-table-column>
+    <el-table-column prop="companyName" label="单位名称" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="img" label="图片" show-overflow-tooltip width="70"></el-table-column>
+    <el-table-column prop="detail" label="详情" show-overflow-tooltip width="200"></el-table-column>
+    <el-table-column prop="address" label="单位地址" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="phone" label="单位电话" width="200"></el-table-column>
+    <el-table-column fixed="right" label="状态" width="150">
+      <template slot-scope="scope">
+        <el-button @click="handleClicky(scope.row)" type="text" size="small">编辑</el-button>
+        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, dataList)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!--表格的页码-->
+  <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+
+</div>

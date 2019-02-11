@@ -1,0 +1,103 @@
+<div class="legalAidCenterPage">
+
+  <!--头部搜索部分-->
+  <el-container>
+    <el-main>
+      名称：
+      <el-input placeholder="请输入关键字..." size="mini" style="width: 200px;"></el-input>
+      <el-button type="primary" icon="el-icon-search" size="mini">搜索</el-button>
+    </el-main>
+  </el-container>
+
+  <!--三个按钮-->
+  <el-row>
+    <el-button type="primary" size="small">排序</el-button>
+    <el-button type="primary" size="small">删除</el-button>
+    <el-button type="primary" @click="addLegalCenterDialog = true" size="small">添加法律援助中心</el-button>
+  </el-row>
+
+  <!--点击添加按钮弹出表单部分-->
+  <el-dialog :visible.sync="addLegalCenterDialog" center>
+    <el-form :model="form" label-position="left" label-width="150px" :rules="rules">
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+      </el-form-item>
+      <el-form-item label="地址" prop="address">
+        <el-input v-model="form.address" placeholder="请输入地址"></el-input>
+      </el-form-item>
+      <el-form-item label="联系方式" prop="linkmethod">
+        <el-input v-model.number="form.linkmethod" placeholder="请输入联系方式"></el-input>
+      </el-form-item>
+      <el-form-item label="邮编">
+        <el-input v-model="form.zipcode" placeholder="请输入邮编"></el-input>
+      </el-form-item>
+      <el-form-item label="简介">
+        <el-input type="textarea" v-model="form.introduce"></el-input>
+      </el-form-item>
+      <el-form-item label="缩略图">
+        <el-input type="textarea" v-model="form.smallimg"></el-input>
+      </el-form-item>
+      <el-form-item label="相册图集">
+        <el-input type="textarea" v-model="form.pictures"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="addLegalCenterDialog = false" size="small">提 交</el-button>
+      <el-button @click="addLegalCenterDialog = false" size="small">返 回</el-button>
+    </div>
+  </el-dialog>
+
+  <!--点击编辑按钮弹出表单部分-->
+  <el-dialog :visible.sync="editLegalCenterDialog" center>
+    <el-form :model="editForm" label-position="left" label-width="150px" :rules="editRules">
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="editForm.title" placeholder="请输入标题"></el-input>
+      </el-form-item>
+      <el-form-item label="地址" prop="address">
+        <el-input v-model="editForm.address" placeholder="请输入地址"></el-input>
+      </el-form-item>
+      <el-form-item label="联系方式" prop="phone">
+        <el-input v-model.number="editForm.phone" placeholder="请输入联系方式"></el-input>
+      </el-form-item>
+      <el-form-item label="邮编">
+        <el-input v-model="editForm.postNumber" placeholder="请输入邮编"></el-input>
+      </el-form-item>
+      <el-form-item label="简介">
+        <el-input type="textarea" v-model="editForm.introduction"></el-input>
+      </el-form-item>
+      <el-form-item label="缩略图">
+        <el-input type="textarea" v-model="editForm.img"></el-input>
+      </el-form-item>
+      <el-form-item label="相册图集">
+        <el-input type="textarea" v-model="editForm.pictures"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="editLegalCenterDialog = false" size="small">提 交</el-button>
+      <el-button @click="editLegalCenterDialog = false" size="small">返 回</el-button>
+    </div>
+  </el-dialog>
+
+  <!--页面里表格部分-->
+  <el-table class="table" :data="dataList.slice((currentPage-1)*pagesize,currentPage*pagesize)" v-loading="loading" element-loading-text="数据拼命加载中..." border style="width: 100%">
+    <el-table-column type="selection"></el-table-column>
+    <el-table-column fixed prop="type" label="排序" width="50"></el-table-column>
+    <el-table-column prop="title" label="标题" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="phone" label="联系方式"></el-table-column>
+    <el-table-column prop="postNumber" label="邮编" width="100"></el-table-column>
+    <el-table-column prop="img" label="图片" show-overflow-tooltip width="70"></el-table-column>
+    <el-table-column prop="introduction" label="简介" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="time" label="时间"></el-table-column>
+    <el-table-column fixed="right" label="操作" width="150">
+      <template slot-scope="scope">
+        <el-button @click="handleClicky(scope.row)" type="text" size="small">编辑</el-button>
+        <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.$index, dataList)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!--表格的页码-->
+  <el-pagination background layout="prev, pager, next" :total="total" @current-change="current_change"></el-pagination>
+
+</div>
